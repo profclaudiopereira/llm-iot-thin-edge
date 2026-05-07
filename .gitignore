@@ -1,0 +1,12 @@
+# ESP-IDF
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
