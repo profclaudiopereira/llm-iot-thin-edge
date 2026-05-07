@@ -72,6 +72,18 @@ Validated:
 - FreeRTOS execution
 - Watchdog behavior
 
+---
+
+## Internal Steps
+
+### Step 01
+Basic ESP-IDF foundation and watchdog behavior.
+
+### Step 02
+Real Wi-Fi connection using ESP-IDF event loop.
+
+---
+
 Next step:
 - Real Wi-Fi connection
 
