@@ -10,11 +10,12 @@ managed_components/
 # Dev Containers
 .devcontainer/
 
-# OS
-.DS_Store
-Thumbs.db
+# Clang
+.clangd
 
 # Node.js
 node_modules/
 
-.clangd
+# OS
+.DS_Store
+Thumbs.db
