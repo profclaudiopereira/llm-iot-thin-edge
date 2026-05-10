@@ -1,40 +1,45 @@
-# README.pt-BR.md (Português)
-
 # Fase 03 — Integração Cloud LLM
 
-> Status: 🚧 Em andamento
+> Status: 🚧 Backend Validado
 
 ---
 
 # Visão Geral
 
-Esta fase introduz integração real entre o dispositivo ESP32-S3 e uma Large Language Model (LLM) baseada em nuvem.
+A Fase 03 introduz a primeira integração real de Inteligência Artificial do projeto.
 
-O objetivo é evoluir a arquitetura de:
+As fases anteriores validaram:
 
-```text
-ESP32 → Backend
-```
+- conectividade Wi‑Fi
+- DHCP
+- comunicação HTTP
+- comunicação backend
 
-para:
+Agora a arquitetura evolui para:
 
 ```text
 ESP32 → Backend → LLM → Response
 ```
 
-Esta é a primeira fase real de Inteligência Artificial do projeto.
+O objetivo é manter o ESP32 leve enquanto a inteligência executa na nuvem.
 
 ---
 
-# Objetivo Principal
+# Filosofia Thin Edge + Cloud LLM
 
-O dispositivo ESP32 irá:
+Este projeto evita propositalmente executar IA diretamente no ESP32.
 
-1. Enviar uma pergunta ao backend
-2. O backend encaminhará a requisição para uma LLM cloud
-3. O backend receberá a resposta da LLM
-4. O backend retornará a resposta ao ESP32
-5. O ESP32 exibirá a resposta no monitor serial
+Ao invés disso:
+
+- ESP32 cuida da conectividade e interação
+- Backend cuida da orquestração e segurança
+- Cloud LLM cuida da inteligência
+
+Esta arquitetura é chamada:
+
+```text
+Thin Edge Device + Cloud Intelligence
+```
 
 ---
 
@@ -46,18 +51,6 @@ O dispositivo ESP32 irá:
 
 ---
 
-# Por Que Continuar Usando o AtomS3 Lite?
-
-Esta fase propositalmente mantém o hardware simples.
-
-O objetivo é demonstrar o conceito de:
-
-> Thin Edge Device + Cloud Intelligence
-
-O dispositivo permanece leve e barato enquanto a inteligência executa na nuvem.
-
----
-
 # Arquitetura
 
 ```text
@@ -65,7 +58,7 @@ O dispositivo permanece leve e barato enquanto a inteligência executa na nuvem.
       ↓ HTTP JSON
 [Backend Node.js]
       ↓ HTTPS
-[Cloud LLM API]
+[OpenAI API]
       ↓ JSON
 [Backend]
       ↓ HTTP JSON
@@ -74,32 +67,39 @@ O dispositivo permanece leve e barato enquanto a inteligência executa na nuvem.
 
 ---
 
-# Responsabilidade de Cada Camada
+# Por Que Esta Arquitetura é Importante
 
-| Camada | Responsabilidade |
-|---|---|
-| ESP32 | Comunicação de rede e interação |
-| Backend | Orquestração e segurança |
-| LLM Provider | Processamento de IA |
-
----
-
-# Conceito Importante de Segurança
-
-## A API key NUNCA deve ficar dentro do ESP32.
-
-A chave permanecerá apenas no backend.
+O ESP32 NÃO se comunica diretamente com a OpenAI.
 
 Arquitetura correta:
 
 ```text
-ESP32 → Backend → LLM API
+ESP32 → Backend → OpenAI API
 ```
 
-Arquitetura incorreta:
+Benefícios:
+
+- proteção da API key
+- abstração de providers
+- debugging simplificado
+- escalabilidade
+- futura troca de providers
+
+---
+
+# Estrutura do Backend
 
 ```text
-ESP32 → LLM API diretamente
+backend/
+├── api/
+│   ├── test_llm.js
+│   └── .env
+│
+├── llm/
+│   └── openai.js
+│
+├── stt/
+└── tts/
 ```
 
 ---
@@ -108,171 +108,275 @@ ESP32 → LLM API diretamente
 
 | Tecnologia | Função |
 |---|---|
-| ESP-IDF | Framework embarcado |
 | Node.js | Runtime backend |
-| Express | Servidor REST |
-| OpenAI API | Provedor LLM |
+| OpenAI SDK | Comunicação LLM |
+| dotenv | Variáveis de ambiente |
 | JSON | Troca de dados |
+| REST | Arquitetura de API |
 
 ---
 
-# Estrutura do Projeto
+# Passo a Passo
+
+## Etapa 01 — Criar API Key OpenAI
+
+Criar a chave em:
+
+OpenAI Platform → API Keys
+
+Importante:
 
 ```text
-firmware/
-└── phase_03_cloud_llm/
-    ├── main/
-    ├── README.md
-    ├── README.pt-BR.md
-    ├── CMakeLists.txt
-    └── sdkconfig
+A API key NUNCA deve ficar dentro do firmware ESP32.
 ```
 
-Backend:
+---
+
+## Etapa 02 — Configurar Billing
+
+Adicionar pequeno saldo pré-pago:
+
+- 5 USD
+- 10 USD
+
+Suficiente para testes educacionais.
+
+---
+
+## Etapa 03 — Instalar Dependências
+
+Dentro de:
+
+```text
+backend/
+```
+
+executar:
+
+```bash
+npm install openai dotenv express
+```
+
+---
+
+## Etapa 04 — Criar .env
+
+Dentro de:
+
+```text
+backend/api/.env
+```
+
+Conteúdo:
+
+```env
+OPENAI_API_KEY=sk-xxxxxxxx
+```
+
+---
+
+# Regras de Segurança
+
+O arquivo `.env` NUNCA deve ser enviado ao GitHub.
+
+Adicionar ao `.gitignore`:
+
+```gitignore
+.env
+```
+
+Nunca:
+
+- hardcodar API keys
+- commitar segredos
+- colocar chaves no firmware
+
+---
+
+## Etapa 05 — Criar openai.js
+
+Arquivo:
+
+```text
+backend/llm/openai.js
+```
+
+Responsabilidades:
+
+- conectar à OpenAI
+- enviar prompts
+- receber respostas
+- isolar lógica do provider
+
+---
+
+# Exemplo de Lógica Backend
+
+```javascript
+require("dotenv").config();
+
+const OpenAI = require("openai");
+
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+```
+
+---
+
+## Etapa 06 — Criar test_llm.js
+
+Arquivo:
+
+```text
+backend/api/test_llm.js
+```
+
+Objetivo:
+
+Validar comunicação LLM independentemente.
+
+Filosofia do projeto:
+
+```text
+Validar subsistemas independentemente antes da integração.
+```
+
+---
+
+# Troubleshooting Real
+
+## Problema 01 — Diretório Incorreto
+
+Erro:
+
+```text
+Cannot find module 'test_llm.js'
+```
+
+Causa:
+
+O comando foi executado na raiz do repositório.
+
+Solução:
+
+```bash
+cd backend/api
+```
+
+---
+
+## Problema 02 — dotenv Não Encontrado
+
+Erro:
+
+```text
+Cannot find module 'dotenv'
+```
+
+Causa:
+
+As dependências foram instaladas na camada errada do backend.
+
+Solução:
+
+Instalar dependências em:
+
+```text
+backend/
+```
+
+ao invés de:
 
 ```text
 backend/api/
-├── llm/
-│   └── openai.js
-├── server.js
-├── package.json
-└── README.md
 ```
 
 ---
 
-# Plano Passo a Passo
+# Melhoria Arquitetural
 
-## Etapa 01 — Criar o Novo Projeto ESP-IDF
-
-Criar:
+O backend evoluiu de:
 
 ```text
-firmware/phase_03_cloud_llm/
+backend/api/node_modules
 ```
 
-Esta fase NÃO pode quebrar as fases anteriores.
-
----
-
-## Etapa 02 — Criar o Módulo Backend da LLM
-
-Criar:
+para:
 
 ```text
-backend/api/llm/openai.js
+backend/node_modules
 ```
 
-Este módulo isolará toda a lógica de comunicação com a LLM.
+Isso melhorou:
+
+- modularidade
+- escalabilidade
+- abstração de providers
 
 ---
 
-## Etapa 03 — Configurar a API Key OpenAI
+# Primeira Resposta LLM Bem-Sucedida
 
-A chave ficará apenas no backend.
+```text
+Sending question to LLM...
 
-Exemplo:
+LLM Response:
 
-```javascript
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+An embedded system is...
 ```
+
+Validado:
+
+- acesso OpenAI API
+- billing
+- dotenv
+- orquestração backend
+- integração cloud AI
 
 ---
 
-## Etapa 04 — Criar Novo Endpoint Backend
+# Conceitos Introduzidos
 
-Novo endpoint:
+| Conceito | Descrição |
+|---|---|
+| LLM | Large Language Model |
+| Backend Proxy | Camada de abstração |
+| API Security | Segredos ficam no backend |
+| dotenv | Configuração de ambiente |
+| Thin Edge | Dispositivo embarcado leve |
+| Cloud AI | Inteligência fora do ESP32 |
+
+---
+
+# Estado Atual do Projeto
+
+| Fase | Status |
+|---|---|
+| Fase 01 — Fundação Wi‑Fi | ✅ Completa |
+| Fase 02 — Comunicação HTTP | ✅ Completa |
+| Fase 03 — Integração Cloud LLM | 🚧 Backend Validado |
+
+---
+
+# Próximos Passos
+
+Criar endpoint REST:
 
 ```text
 POST /ask
 ```
 
----
-
-## Etapa 05 — ESP32 Envia Pergunta
-
-Exemplo:
-
-```json
-{
-  "message": "What is FreeRTOS?"
-}
-```
-
----
-
-## Etapa 06 — Backend Chama a LLM
-
-O backend encaminha a pergunta ao provedor LLM.
-
----
-
-## Etapa 07 — Backend Retorna Resposta
-
-Exemplo:
-
-```json
-{
-  "response": "FreeRTOS is a real-time operating system..."
-}
-```
-
----
-
-## Etapa 08 — ESP32 Exibe Resposta
-
-O ESP32 imprime a resposta utilizando:
-
-```c
-ESP_LOGI()
-```
-
----
-
-# Fluxo Final Esperado
+Fluxo futuro:
 
 ```text
-ESP32:
-"What is an embedded system?"
-
-↓
-
-Resposta LLM:
-"An embedded system is a dedicated computer system..."
+ESP32
+    ↓ HTTP
+Backend API
+    ↓
+askLLM()
+    ↓
+OpenAI API
+    ↓
+Response
 ```
-
----
-
-# Conceitos Importantes Aprendidos
-
-Esta fase introduz:
-
-- arquitetura cloud AI
-- orquestração de LLM
-- padrão backend proxy
-- segurança de API
-- parsing de JSON
-- fluxos request/response de IA
-
----
-
-# Regras Desta Fase
-
-- Não quebrar fases anteriores
-- Manter firmware isolado
-- Não expor API keys
-- Manter ESP32 leve
-- Utilizar backend como camada de orquestração
-
----
-
-# Evolução Futura
-
-Esta fase prepara o projeto para:
-
-- assistentes de voz
-- pipelines de áudio
-- sistemas de visão
-- IA multimodal
-- integração de LLM local
-

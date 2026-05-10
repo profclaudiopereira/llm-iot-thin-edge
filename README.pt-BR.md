@@ -59,8 +59,6 @@ llm-iot-thin-edge/
 - Novas fases não podem quebrar fases anteriores
 - Testar no hardware real antes de avançar
 - Firmware isolado por fase
-- Evitar misturar áudio/câmera cedo demais
-- MQTT/TLS estão propositalmente fora do escopo deste repositório
 
 ---
 
