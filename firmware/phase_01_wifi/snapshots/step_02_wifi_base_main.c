@@ -11,8 +11,8 @@
 
 #include "esp_netif.h"
 
-#define WIFI_SSID      "OKFIBRA-Claudio_2GHz"
-#define WIFI_PASSWORD  "15120813"
+#define WIFI_SSID      "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD  "YOUR_WIFI_PASSWORD"
 
 static const char *TAG = "PHASE_01_WIFI";
 

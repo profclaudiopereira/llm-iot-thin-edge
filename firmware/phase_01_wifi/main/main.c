@@ -11,8 +11,10 @@
 
 #include "esp_netif.h"
 
-#define WIFI_SSID      "TRIUMPH-CLIENTES"
-#define WIFI_PASSWORD  "Triumph@2026"
+
+#define WIFI_SSID      "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD  "YOUR_WIFI_PASSWORD"
+
 
 static const char *TAG = "PHASE_01_WIFI";
 
