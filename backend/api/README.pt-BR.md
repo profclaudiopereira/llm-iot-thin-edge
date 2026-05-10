@@ -1,292 +1,419 @@
-# Backend API — Fase 02 Comunicação HTTP
+# Backend API — LLM IoT Thin Edge
 
-> Status: ✅ Completa
+> Status: 🚧 REST + LLM em Desenvolvimento Ativo
 
 ---
 
 # Visão Geral
 
-Este documento explica a API backend utilizada durante a Fase 02 do projeto.
+A camada API evoluiu de um simples servidor HTTP de validação para o gateway de comunicação entre dispositivos embarcados e serviços cloud de IA.
 
-O backend atua como um serviço cloud simples que recebe requisições HTTP do dispositivo ESP32-S3.
+Inicialmente a API validava:
 
-Esta fase introduz:
+- comunicação HTTP
+- payloads JSON
+- arquitetura REST
 
-- fundamentos de REST API
-- comunicação JSON
-- arquitetura cliente/servidor
-- desenvolvimento backend Node.js
-- comunicação cloud do ESP32
+Agora a API também orquestra:
+
+- comunicação LLM
+- requisições IA backend
+- abstração de providers
+- serviços multimodais futuros
 
 ---
 
-# Arquitetura
+# Filosofia da API
+
+A camada API isola propositalmente dispositivos embarcados dos providers IA.
+
+O ESP32 comunica apenas com:
 
 ```text
-[ESP32-S3]
-      ↓ HTTP POST
-[Backend Node.js]
-      ↓ JSON Response
-[HTTP 200 OK]
+Backend API
+```
+
+O backend torna-se responsável por:
+
+- orquestração IA
+- comunicação providers
+- segurança
+- formatação de respostas
+
+Isso segue o conceito:
+
+```text
+Thin Edge Device + Cloud Intelligence
 ```
 
 ---
 
-# Tecnologias Utilizadas
-
-| Tecnologia | Função |
-|---|---|
-| Node.js | Runtime JavaScript |
-| Express | Framework servidor HTTP |
-| JSON | Troca estruturada de dados |
-| REST | Modelo de comunicação |
-
----
-
-# Estrutura de Pastas
+# Arquitetura Atual da API
 
 ```text
-backend/
-└── api/
-    ├── package.json
-    ├── server.js
-    ├── README.md
-    └── README.pt-BR.md
+ESP32
+   ↓ HTTP JSON
+REST API
+   ↓
+askLLM()
+   ↓
+OpenAI API
+   ↓
+LLM Response
 ```
 
 ---
 
-# Guia Passo a Passo
-
-## Etapa 01 — Criar a Pasta do Backend
-
-Dentro do repositório:
+# Estrutura Atual API
 
 ```text
 backend/api/
+├── README.md
+├── README.pt-BR.md
+├── server.js
+├── test_llm.js
+├── snapshots/
+│   ├── step_01_basic_http_server.js
+│   └── step_02_llm_rest_api.js
+│
+└── .env
 ```
 
 ---
 
-## Etapa 02 — Inicializar Node.js
+# Responsabilidade dos Arquivos
 
-Abra um terminal:
+| Arquivo | Responsabilidade |
+|---|---|
+| server.js | REST API operacional |
+| test_llm.js | validação backend isolada |
+| snapshots/ | histórico evolução arquitetural |
+| .env | credenciais seguras |
 
-```bash
-cd backend/api
-npm init -y
-```
+---
 
-Isso cria:
+# Evolução dos Snapshots
+
+| Etapa | Arquivo | Descrição |
+|---|---|---|
+| 01 | step_01_basic_http_server.js | Validação REST básica |
+| 02 | step_02_llm_rest_api.js | REST + orquestração LLM |
+| 03 | server.js | API operacional atual |
+
+---
+
+# Evolução REST API
+
+## Endpoint Inicial
 
 ```text
-package.json
-```
-
----
-
-## Etapa 03 — Instalar Express
-
-```bash
-npm install express
-```
-
----
-
-## Etapa 04 — Criar server.js
-
-Crie o arquivo:
-
-```text
-server.js
-```
-
-com o seguinte conteúdo:
-
-```javascript
-const express = require("express");
-
-const app = express();
-
-app.use(express.json());
-
-app.post("/ping", (req, res) => {
-
-    console.log("Request received:");
-    console.log(req.body);
-
-    res.json({
-        status: "ok",
-        message: "Hello from backend"
-    });
-});
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-```
-
----
-
-# Executando o Backend
-
-Inicie o backend:
-
-```bash
-node server.js
-```
-
-Saída esperada:
-
-```text
-Server running on port 3000
-```
-
----
-
-# Endpoint da API
-
-## POST /ping
-
-Este endpoint recebe dados do dispositivo ESP32.
-
----
-
-# Exemplo de Requisição
-
-```http
 POST /ping
-Content-Type: application/json
 ```
 
-Payload JSON:
+Objetivo:
+
+- validar backend
+- validar JSON
+- validar comunicação REST
+
+---
+
+# Exemplo Request
 
 ```json
 {
-  "device": "atom_s3_lite",
-  "message": "hello backend"
+  "device": "atom_s3_lite"
 }
 ```
 
 ---
 
-# Exemplo de Resposta
+# Exemplo Response
 
 ```json
 {
   "status": "ok",
-  "message": "Hello from backend"
+  "message": "Backend online"
 }
 ```
 
 ---
 
-# Entendendo REST
+# Endpoint IA Atual
 
-REST é um modelo de comunicação utilizado entre clientes e servidores.
+```text
+POST /ask
+```
 
-Neste projeto:
+Objetivo:
 
-| Componente | Papel |
-|---|---|
-| ESP32 | Cliente HTTP |
-| Node.js | Servidor HTTP |
+- receber perguntas
+- orquestrar IA
+- retornar respostas LLM
 
 ---
 
-# Conceitos Importantes de Rede
+# Exemplo Request IA
 
-## localhost
-
-O ESP32 não pode utilizar:
-
-```text
-localhost
+```json
+{
+  "message": "What is FreeRTOS?"
+}
 ```
 
-porque localhost no ESP32 significa o próprio ESP32.
+---
 
-O ESP32 deve utilizar o IP real do computador.
+# Exemplo Response IA
+
+```json
+{
+  "response": "FreeRTOS is..."
+}
+```
+
+---
+
+# Evolução Passo a Passo
+
+## Etapa 01 — Servidor REST Básico
+
+O backend inicial validou:
+
+- Express
+- JSON
+- POST requests
+- comunicação HTTP
+
+Isso criou a fundação para futura comunicação IA.
+
+---
+
+## Etapa 02 — Orquestração IA Backend
+
+A API evoluiu para:
+
+```text
+REST API + AI Gateway
+```
+
+Novos conceitos introduzidos:
+
+- async/await
+- OpenAI SDK
+- provider abstraction
+- backend orchestration
+- dotenv
+- segurança API key
+
+---
+
+# Por Que Orquestração Backend é Importante
+
+O firmware ESP32 NÃO conhece:
+
+- OpenAI
+- Gemini
+- Ollama
+- Claude
+
+O firmware comunica apenas com:
+
+```text
+REST API
+```
+
+Esta arquitetura permite troca futura de providers sem alterar firmware.
+
+---
+
+# Fluxo Atual Requests
+
+```text
+ESP32
+   ↓
+POST /ask
+   ↓
+REST API
+   ↓
+askLLM()
+   ↓
+OpenAI API
+   ↓
+LLM Response
+```
+
+---
+
+# Conceitos Importantes API
+
+| Conceito | Descrição |
+|---|---|
+| REST API | camada comunicação HTTP |
+| JSON | comunicação estruturada |
+| Backend Proxy | camada abstração IA |
+| async/await | orquestração assíncrona |
+| Thin Edge | dispositivos embarcados leves |
+
+---
+
+# Arquitetura Segurança
+
+A API key NUNCA permanece em:
+
+- firmware ESP32
+- screenshots
+- GitHub
+
+Arquitetura correta:
+
+```text
+ESP32 → REST API → OpenAI API
+```
+
+Arquitetura incorreta:
+
+```text
+ESP32 → OpenAI API
+```
+
+---
+
+# Variáveis Ambiente
+
+Credenciais sensíveis permanecem em:
+
+```text
+.env
+```
 
 Exemplo:
 
-```text
-http://192.168.77.16:3000/ping
+```env
+OPENAI_API_KEY=sk-xxxxxxxx
 ```
 
 ---
 
-# Considerações sobre Firewall
+# Regras Segurança Git
 
-O Firewall do Windows pode bloquear conexões Node.js.
+O `.gitignore` deve conter:
 
-Se o ESP32 não conseguir conectar:
+```gitignore
+.env
+node_modules/
+```
 
-- liberar Node.js no firewall
-- verificar a porta 3000
-- verificar se ambos dispositivos estão na mesma rede
+O `.env` NUNCA deve ser enviado ao GitHub.
 
 ---
 
-# Erros Comuns
+# Troubleshooting Real
 
-## Host is unreachable
+## Problema 01 — Diretório Node.js Incorreto
+
+Erro:
+
+```text
+Cannot find module 'test_llm.js'
+```
 
 Causa:
-- Wi‑Fi desconectado
-- IP incorreto do servidor
-- problema de roteamento
+
+Execução em diretório incorreto.
+
+Solução:
+
+```bash
+cd backend/api
+```
 
 ---
 
-## Connection reset by peer
+## Problema 02 — dotenv Não Encontrado
+
+Erro:
+
+```text
+Cannot find module 'dotenv'
+```
 
 Causa:
-- backend não está executando
-- firewall bloqueando conexão
-- porta incorreta
+
+Dependências instaladas na camada backend incorreta.
 
 ---
 
-# Saída Esperada do Backend
+# Melhoria Arquitetural
+
+O backend evoluiu de:
 
 ```text
-Request received:
-{
-  device: 'atom_s3_lite',
-  message: 'hello backend'
-}
+backend/api/node_modules
 ```
 
----
-
-# Resultados de Aprendizagem
-
-Ao final desta fase, o desenvolvedor compreende:
-
-- fundamentos REST
-- comunicação JSON
-- requisições HTTP POST
-- arquitetura backend/servidor
-- comunicação cloud do ESP32
-- troubleshooting de rede
-
----
-
-# Próxima Fase
-
-## Phase 03 — Integração Cloud LLM
-
-Arquitetura futura:
+para:
 
 ```text
-[ESP32-S3]
-      ↓ HTTP
-[Backend Node.js]
-      ↓
-[LLM API]
-      ↓
-[Response]
+backend/node_modules
 ```
+
+Benefícios:
+
+- arquitetura mais limpa
+- escalabilidade
+- dependências compartilhadas
+- backend modular
+
+---
+
+# Primeira Resposta LLM Bem-Sucedida
+
+```text
+Sending question to LLM...
+
+LLM Response:
+
+An embedded system is...
+```
+
+Validado:
+
+- OpenAI API
+- backend orchestration
+- dotenv
+- provider abstraction
+- AI REST API
+
+---
+
+# Estado Atual
+
+| Funcionalidade | Status |
+|---|---|
+| REST API | ✅ Funcionando |
+| JSON Requests | ✅ Funcionando |
+| /ping | ✅ Funcionando |
+| /ask | ✅ Funcionando |
+| Integração OpenAI | ✅ Funcionando |
+| Backend Orchestration | ✅ Funcionando |
+
+---
+
+# Próximos Passos
+
+- integrar ESP32 com /ask
+- parsing JSON no ESP32
+- exibir respostas IA
+- integração voz futura
+- evolução multimodal
+
+---
+
+# Visão Final
+
+A camada API está evoluindo para:
+
+- gateway IA
+- camada orquestração
+- camada comunicação embarcada
+- API integração multimodal

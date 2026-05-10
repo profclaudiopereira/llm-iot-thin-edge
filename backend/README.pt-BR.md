@@ -6,45 +6,55 @@
 
 # Visão Geral
 
-O backend deste projeto evoluiu de um simples servidor HTTP para uma plataforma modular de orquestração de IA.
+O backend evoluiu de um simples servidor REST para uma plataforma modular de orquestração de IA.
 
-O backend tornou-se responsável por:
+Originalmente o backend validava apenas:
 
+- comunicação HTTP
 - APIs REST
-- orquestração de LLM cloud
-- processamento futuro de voz
-- pipelines multimodais futuros
-- abstração de segurança
-- abstração de providers IA
+- payloads JSON
 
-Esta arquitetura segue o conceito de:
+Agora o backend também tornou-se responsável por:
 
+- orquestração cloud LLM
+- abstração IA
+- isolamento de providers
+- serviços multimodais futuros
+- camadas de orquestração
+- segurança de APIs
+
+Esta arquitetura segue o conceito:
+
+```text
 Thin Edge Device + Cloud Intelligence
+```
 
 ---
 
-# Filosofia do Backend
+# Filosofia de Aprendizagem
 
-Os dispositivos ESP32 permanecem leves.
+Este projeto evolui propositalmente de forma incremental.
 
-O backend centraliza:
+Cada subsistema é validado independentemente antes da integração.
 
-- processamento IA
-- comunicação com providers
-- orquestração
-- segurança
-- serviços multimodais
+A evolução backend seguiu esta ordem:
 
-Isso mantém os dispositivos embarcados:
+1. Backend HTTP básico
+2. Validação REST API
+3. Integração OpenAI
+4. Orquestração backend
+5. Integração futura ESP32 + LLM
 
-- mais simples
-- mais baratos
-- mais fáceis de manter
-- escaláveis
+Esta abordagem simplifica:
+
+- debugging
+- entendimento arquitetural
+- troubleshooting
+- isolamento de subsistemas
 
 ---
 
-# Arquitetura Backend
+# Arquitetura Backend Atual
 
 ```text
 ESP32
@@ -58,7 +68,7 @@ Serviços Cloud AI
 
 ---
 
-# Estrutura Atual do Backend
+# Estrutura Backend
 
 ```text
 backend/
@@ -66,127 +76,143 @@ backend/
 ├── README.pt-BR.md
 │
 ├── api/
+│   ├── server.js
+│   ├── test_llm.js
+│   ├── snapshots/
+│   │   ├── step_01_basic_http_server.js
+│   │   └── step_02_llm_rest_api.js
+│   │
+│   └── .env
+│
 ├── llm/
+│   └── openai.js
+│
 ├── stt/
 └── tts/
 ```
 
 ---
 
-# Responsabilidade das Pastas
+# Responsabilidades Backend
 
-## api/
-
-Camada REST de comunicação.
-
-Responsabilidades:
-
-- endpoints HTTP
-- validação de requests
-- comunicação JSON
-- integração com edge devices
-
-Exemplos:
-
-- POST /ping
-- POST /ask
+| Camada | Responsabilidade |
+|---|---|
+| api | comunicação REST |
+| llm | orquestração IA |
+| stt | speech-to-text futuro |
+| tts | text-to-speech futuro |
 
 ---
 
-## llm/
+# Evolução dos Snapshots
 
-Camada de orquestração de Large Language Models.
+| Etapa | Arquivo | Descrição |
+|---|---|---|
+| 01 | step_01_basic_http_server.js | Backend REST básico |
+| 02 | step_02_llm_rest_api.js | REST + integração LLM |
+| 03 | server.js | Backend operacional atual |
 
-Responsabilidades:
+---
 
-- integração OpenAI
-- gerenciamento de prompts
-- abstração de providers
-- orquestração IA
+# Evolução Passo a Passo
 
-Provider atual:
+## Etapa 01 — Backend HTTP Básico
 
-- OpenAI API
+Responsabilidades iniciais:
 
-Providers futuros:
+- receber requisições HTTP
+- processar JSON
+- validar arquitetura REST
 
+Endpoint:
+
+```text
+POST /ping
+```
+
+Validado:
+
+- Express
+- comunicação JSON
+- APIs REST
+- comunicação backend
+
+---
+
+## Etapa 02 — Integração OpenAI
+
+O backend evoluiu para:
+
+```text
+REST API + Orquestração IA
+```
+
+Novos conceitos introduzidos:
+
+- OpenAI SDK
+- async/await
+- camada backend de abstração
+- orquestração de providers
+- dotenv
+- segurança API key
+
+---
+
+# Por Que Abstração de Provider é Importante
+
+O firmware ESP32 NÃO conhece:
+
+- OpenAI
 - Ollama
 - Gemini
 - Claude
-- LLMs locais
 
----
-
-## stt/
-
-Camada speech-to-text.
-
-Responsabilidades futuras:
-
-- processamento de microfone
-- transcrição de áudio
-- reconhecimento de comandos de voz
-
-Hardware planejado:
-
-- Echo Pyramid
-
----
-
-## tts/
-
-Camada text-to-speech.
-
-Responsabilidades futuras:
-
-- síntese de voz
-- geração de respostas em áudio
-- assistentes embarcados
-
----
-
-# Por Que Esta Arquitetura é Importante
-
-Este design modular fornece:
-
-- escalabilidade
-- independência de provider
-- debugging simplificado
-- isolamento de subsistemas
-- suporte multimodal futuro
-
----
-
-# Arquitetura Thin Edge
-
-O ESP32 NÃO executa workloads pesados de IA.
-
-Ao invés disso:
+O ESP32 comunica apenas com:
 
 ```text
-ESP32 → Backend → Cloud AI
+Backend API
 ```
+
+Isso permite troca de provider sem alterar firmware.
+
+---
+
+# Filosofia Thin Edge
+
+O ESP32 permanece leve.
+
+O backend centraliza:
+
+- processamento IA
+- comunicação com providers
+- orquestração
+- serviços multimodais
+- segurança
 
 Benefícios:
 
-- menor custo de hardware
-- firmware mais simples
-- atualizações facilitadas
-- orquestração IA centralizada
+- menor custo hardware
+- manutenção firmware simplificada
+- arquitetura escalável
+- evolução IA centralizada
 
 ---
 
-# Filosofia de Segurança
+# Arquitetura de Segurança
 
-As API keys NUNCA permanecem dentro do firmware.
+API keys NUNCA permanecem em:
 
-Correto:
+- firmware
+- ESP32
+- GitHub
+
+Arquitetura correta:
 
 ```text
 ESP32 → Backend → OpenAI API
 ```
 
-Errado:
+Arquitetura incorreta:
 
 ```text
 ESP32 → OpenAI API
@@ -210,53 +236,22 @@ OPENAI_API_KEY=sk-xxxxxxxx
 
 ---
 
-# Regra Importante Git
-
-O arquivo `.env` NUNCA deve ser enviado ao GitHub.
+# Regras Git Importantes
 
 O `.gitignore` deve conter:
 
 ```gitignore
 .env
+node_modules/
 ```
 
----
-
-# Evolução do Desenvolvimento
-
-## Phase 01
-
-Validado:
-
-- ESP-IDF
-- FreeRTOS
-- Wi‑Fi
-- DHCP
+O arquivo `.env` NUNCA deve ser enviado ao GitHub.
 
 ---
 
-## Phase 02
+# Fluxo Atual IA Backend
 
-Validado:
-
-- comunicação HTTP
-- backend REST
-- payloads JSON
-
----
-
-## Phase 03
-
-Validado:
-
-- OpenAI API
-- dotenv
-- orquestração backend
-- respostas LLM
-
----
-
-# Fluxo Atual de IA
+Fluxo validado atual:
 
 ```text
 Node.js
@@ -268,11 +263,25 @@ OpenAI API
 Response
 ```
 
+Fluxo futuro:
+
+```text
+ESP32
+    ↓ HTTP
+Backend API
+    ↓
+askLLM()
+    ↓
+OpenAI API
+    ↓
+Response
+```
+
 ---
 
-# Problemas Reais Encontrados
+# Troubleshooting Real
 
-## Problema 01 — Diretório Incorreto Node.js
+## Problema 01 — Diretório Node.js Incorreto
 
 Erro:
 
@@ -294,23 +303,70 @@ cd backend/api
 
 ## Problema 02 — dotenv Não Encontrado
 
+Erro:
+
+```text
+Cannot find module 'dotenv'
+```
+
 Causa:
 
-Dependências instaladas na camada incorreta.
+Dependências instaladas na camada backend incorreta.
 
-Evolução arquitetural:
+---
+
+# Melhoria Arquitetural
+
+O backend evoluiu de:
 
 ```text
 backend/api/node_modules
 ```
 
-tornou-se:
+para:
 
 ```text
 backend/node_modules
 ```
 
-Isso melhorou a modularidade backend.
+Isso melhorou:
+
+- modularidade
+- escalabilidade
+- organização de dependências
+
+---
+
+# Primeira Resposta LLM Bem-Sucedida
+
+```text
+Sending question to LLM...
+
+LLM Response:
+
+An embedded system is...
+```
+
+Validado:
+
+- OpenAI API
+- dotenv
+- backend orchestration
+- provider abstraction
+- integração cloud AI
+
+---
+
+# Conceitos Introduzidos
+
+| Conceito | Descrição |
+|---|---|
+| LLM | Large Language Model |
+| Backend Proxy | Camada de abstração IA |
+| dotenv | Variáveis ambiente |
+| Thin Edge | Dispositivo edge leve |
+| Cloud AI | IA fora do ESP32 |
+| REST API | Orquestração HTTP |
 
 ---
 
@@ -318,17 +374,17 @@ Isso melhorou a modularidade backend.
 
 | Subsistema | Status |
 |---|---|
-| API | Funcionando |
-| Integração OpenAI | Funcionando |
-| Backend LLM | Funcionando |
-| STT | Planejado |
-| TTS | Planejado |
+| API | ✅ Funcionando |
+| Integração OpenAI | ✅ Funcionando |
+| Backend LLM | ✅ Funcionando |
+| STT | 🚧 Planejado |
+| TTS | 🚧 Planejado |
 
 ---
 
 # Objetivos Futuros
 
-- pipeline de voz
+- pipeline voz
 - IA multimodal
 - integração câmera
 - suporte LLM local
@@ -340,7 +396,7 @@ Isso melhorou a modularidade backend.
 
 O backend está evoluindo para:
 
-- plataforma de orquestração IA
+- plataforma orquestração IA
 - gateway multimodal
-- camada de inteligência embarcada
-- sistema de abstração cloud
+- camada abstração cloud
+- backend inteligência embarcada

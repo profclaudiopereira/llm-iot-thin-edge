@@ -6,45 +6,55 @@
 
 # Overview
 
-The backend of this project evolved from a simple HTTP server into a modular AI orchestration platform.
+The backend evolved from a simple REST server into a modular AI orchestration platform.
 
-The backend is responsible for:
+Originally the backend only validated:
 
+- HTTP communication
 - REST APIs
+- JSON payloads
+
+Now the backend also handles:
+
 - Cloud LLM orchestration
-- Future speech processing
-- Future multimodal pipelines
-- Security abstraction
-- AI provider abstraction
+- AI abstraction
+- provider isolation
+- future multimodal services
+- orchestration layers
+- API security
 
 This architecture follows the concept of:
 
+```text
 Thin Edge Device + Cloud Intelligence
+```
 
 ---
 
-# Backend Philosophy
+# Learning Philosophy
 
-The ESP32 devices remain lightweight.
+This project intentionally evolves incrementally.
 
-The backend centralizes:
+Every subsystem is validated independently before integration.
 
-- AI processing
-- provider communication
-- orchestration
-- security
-- multimodal services
+The backend evolution followed this order:
 
-This keeps embedded devices:
+1. Basic HTTP server
+2. REST API validation
+3. OpenAI integration
+4. Backend orchestration
+5. Future ESP32 + LLM integration
 
-- simpler
-- cheaper
-- easier to maintain
-- scalable
+This approach simplifies:
+
+- debugging
+- architecture understanding
+- troubleshooting
+- subsystem isolation
 
 ---
 
-# Backend Architecture
+# Current Backend Architecture
 
 ```text
 ESP32
@@ -58,7 +68,7 @@ Cloud AI Services
 
 ---
 
-# Current Backend Structure
+# Backend Structure
 
 ```text
 backend/
@@ -66,127 +76,143 @@ backend/
 ├── README.pt-BR.md
 │
 ├── api/
+│   ├── server.js
+│   ├── test_llm.js
+│   ├── snapshots/
+│   │   ├── step_01_basic_http_server.js
+│   │   └── step_02_llm_rest_api.js
+│   │
+│   └── .env
+│
 ├── llm/
+│   └── openai.js
+│
 ├── stt/
 └── tts/
 ```
 
 ---
 
-# Folder Responsibilities
+# Backend Responsibilities
 
-## api/
-
-REST communication layer.
-
-Responsibilities:
-
-- HTTP endpoints
-- request validation
-- JSON communication
-- edge device integration
-
-Examples:
-
-- POST /ping
-- POST /ask
+| Layer | Responsibility |
+|---|---|
+| api | REST communication |
+| llm | AI orchestration |
+| stt | future speech-to-text |
+| tts | future text-to-speech |
 
 ---
 
-## llm/
+# Snapshot Evolution
 
-Large Language Model orchestration layer.
+| Step | File | Description |
+|---|---|---|
+| 01 | step_01_basic_http_server.js | Basic REST backend |
+| 02 | step_02_llm_rest_api.js | REST + LLM integration |
+| 03 | server.js | Current operational backend |
 
-Responsibilities:
+---
 
-- OpenAI integration
-- prompt management
-- provider abstraction
-- AI orchestration
+# Step-by-Step Evolution
 
-Current provider:
+## Step 01 — Basic HTTP Backend
 
-- OpenAI API
+Initial backend responsibilities:
 
-Future providers:
+- receive HTTP requests
+- process JSON
+- validate REST architecture
 
+Endpoint:
+
+```text
+POST /ping
+```
+
+Validated:
+
+- Express
+- JSON communication
+- REST APIs
+- backend communication
+
+---
+
+## Step 02 — OpenAI Integration
+
+The backend evolved into:
+
+```text
+REST API + AI Orchestration
+```
+
+New concepts introduced:
+
+- OpenAI SDK
+- async/await
+- backend abstraction layer
+- provider orchestration
+- dotenv
+- API key security
+
+---
+
+# Why Provider Abstraction Matters
+
+The ESP32 firmware does NOT know:
+
+- OpenAI
 - Ollama
 - Gemini
 - Claude
-- local LLMs
 
----
-
-## stt/
-
-Speech-to-text layer.
-
-Future responsibilities:
-
-- microphone processing
-- audio transcription
-- voice command recognition
-
-Planned hardware:
-
-- Echo Pyramid
-
----
-
-## tts/
-
-Text-to-speech layer.
-
-Future responsibilities:
-
-- voice synthesis
-- audio response generation
-- embedded assistant responses
-
----
-
-# Why This Architecture Matters
-
-This modular design provides:
-
-- scalability
-- provider independence
-- easier debugging
-- subsystem isolation
-- future multimodal support
-
----
-
-# Thin Edge Architecture
-
-The ESP32 does NOT execute heavy AI workloads.
-
-Instead:
+The ESP32 only communicates with:
 
 ```text
-ESP32 → Backend → Cloud AI
+Backend API
 ```
+
+This allows provider replacement without firmware changes.
+
+---
+
+# Thin Edge Philosophy
+
+The ESP32 remains lightweight.
+
+The backend centralizes:
+
+- AI processing
+- provider communication
+- orchestration
+- multimodal services
+- security
 
 Benefits:
 
 - lower hardware cost
-- simpler firmware
-- easier updates
-- centralized AI orchestration
+- easier firmware maintenance
+- scalable architecture
+- centralized AI evolution
 
 ---
 
-# Security Philosophy
+# Security Architecture
 
-API keys NEVER remain inside firmware.
+API keys NEVER remain inside:
 
-Correct:
+- firmware
+- ESP32
+- GitHub repositories
+
+Correct architecture:
 
 ```text
 ESP32 → Backend → OpenAI API
 ```
 
-Wrong:
+Wrong architecture:
 
 ```text
 ESP32 → OpenAI API
@@ -196,7 +222,7 @@ ESP32 → OpenAI API
 
 # Environment Variables
 
-Sensitive credentials remain in:
+Sensitive credentials remain inside:
 
 ```text
 .env
@@ -210,56 +236,39 @@ OPENAI_API_KEY=sk-xxxxxxxx
 
 ---
 
-# Important Git Rule
-
-The `.env` file must NEVER be uploaded to GitHub.
+# Important Git Rules
 
 `.gitignore` must contain:
 
 ```gitignore
 .env
+node_modules/
 ```
 
----
-
-# Development Evolution
-
-## Phase 01
-
-Validated:
-
-- ESP-IDF
-- FreeRTOS
-- Wi‑Fi
-- DHCP
+The `.env` file must NEVER be uploaded to GitHub.
 
 ---
 
-## Phase 02
+# Backend AI Flow
 
-Validated:
-
-- HTTP communication
-- REST backend
-- JSON payloads
-
----
-
-## Phase 03
-
-Validated:
-
-- OpenAI API
-- dotenv
-- backend orchestration
-- LLM responses
-
----
-
-# Current AI Flow
+Current validated flow:
 
 ```text
 Node.js
+    ↓
+askLLM()
+    ↓
+OpenAI API
+    ↓
+Response
+```
+
+Future flow:
+
+```text
+ESP32
+    ↓ HTTP
+Backend API
     ↓
 askLLM()
     ↓
@@ -294,23 +303,70 @@ cd backend/api
 
 ## Problem 02 — dotenv Not Found
 
+Error:
+
+```text
+Cannot find module 'dotenv'
+```
+
 Cause:
 
-Dependencies installed in wrong layer.
+Dependencies installed in wrong backend layer.
 
-Architectural evolution:
+---
+
+# Architectural Improvement
+
+The backend evolved from:
 
 ```text
 backend/api/node_modules
 ```
 
-became:
+to:
 
 ```text
 backend/node_modules
 ```
 
-This improved backend modularity.
+This improved:
+
+- modularity
+- scalability
+- dependency organization
+
+---
+
+# First Successful LLM Response
+
+```text
+Sending question to LLM...
+
+LLM Response:
+
+An embedded system is...
+```
+
+Validated:
+
+- OpenAI API
+- dotenv
+- backend orchestration
+- provider abstraction
+- cloud AI integration
+
+---
+
+# Concepts Introduced
+
+| Concept | Description |
+|---|---|
+| LLM | Large Language Model |
+| Backend Proxy | AI abstraction layer |
+| dotenv | Environment variables |
+| Thin Edge | Lightweight edge device |
+| Cloud AI | AI outside ESP32 |
+| REST API | HTTP orchestration |
 
 ---
 
@@ -318,11 +374,11 @@ This improved backend modularity.
 
 | Subsystem | Status |
 |---|---|
-| API | Working |
-| OpenAI Integration | Working |
-| LLM Backend | Working |
-| STT | Planned |
-| TTS | Planned |
+| API | ✅ Working |
+| OpenAI Integration | ✅ Working |
+| Backend LLM | ✅ Working |
+| STT | 🚧 Planned |
+| TTS | 🚧 Planned |
 
 ---
 
@@ -342,5 +398,5 @@ The backend is evolving into:
 
 - AI orchestration platform
 - multimodal gateway
-- embedded intelligence layer
-- cloud abstraction system
+- cloud abstraction layer
+- embedded intelligence backend

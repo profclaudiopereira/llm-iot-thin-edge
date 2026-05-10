@@ -1,6 +1,6 @@
 # Phase 03 — Cloud LLM Integration
 
-> Status: 🚧 Backend Validated
+> Status: 🚧 Backend + LLM Validated
 
 ---
 
@@ -8,37 +8,60 @@
 
 Phase 03 introduces the first real Artificial Intelligence integration of the project.
 
-Previous phases validated:
+The project architecture evolved from:
 
-- Wi‑Fi connectivity
-- DHCP
-- HTTP communication
-- Backend communication
+```text
+ESP32 → Backend
+```
 
-Now the architecture evolves into:
+to:
 
 ```text
 ESP32 → Backend → LLM → Response
 ```
 
-The goal is to keep the ESP32 lightweight while the intelligence runs in the cloud.
-
----
-
-# Thin Edge + Cloud LLM Philosophy
-
-This project intentionally avoids running AI directly on the ESP32.
-
-Instead:
-
-- ESP32 handles connectivity and interaction
-- Backend handles orchestration and security
-- Cloud LLM handles intelligence
-
-This architecture is called:
+This phase validates the concept of:
 
 ```text
 Thin Edge Device + Cloud Intelligence
+```
+
+---
+
+# Learning Philosophy
+
+This project intentionally evolves incrementally.
+
+Each subsystem is validated independently before integration.
+
+This avoids:
+
+- hidden problems
+- difficult debugging
+- architecture confusion
+
+The current development order is:
+
+1. Wi‑Fi foundation
+2. HTTP communication
+3. Backend API
+4. LLM orchestration
+5. ESP32 + LLM integration
+
+---
+
+# Current Architecture
+
+```text
+[ESP32-S3]
+      ↓ HTTP JSON
+[Backend API]
+      ↓
+[LLM Orchestration]
+      ↓ HTTPS
+[OpenAI API]
+      ↓
+[LLM Response]
 ```
 
 ---
@@ -51,49 +74,17 @@ Thin Edge Device + Cloud Intelligence
 
 ---
 
-# Architecture
-
-```text
-[ESP32-S3]
-      ↓ HTTP JSON
-[Node.js Backend]
-      ↓ HTTPS
-[OpenAI API]
-      ↓ JSON
-[Backend]
-      ↓ HTTP JSON
-[ESP32-S3]
-```
-
----
-
-# Why This Architecture Matters
-
-The ESP32 does NOT communicate directly with OpenAI.
-
-Correct architecture:
-
-```text
-ESP32 → Backend → OpenAI API
-```
-
-Benefits:
-
-- API key protection
-- Provider abstraction
-- Easier debugging
-- Scalability
-- Future provider replacement
-
----
-
-# Backend Structure
+# Backend Architecture
 
 ```text
 backend/
+├── README.md
+├── README.pt-BR.md
+│
 ├── api/
+│   ├── server.js
 │   ├── test_llm.js
-│   └── .env
+│   └── snapshots/
 │
 ├── llm/
 │   └── openai.js
@@ -104,42 +95,51 @@ backend/
 
 ---
 
-# Technologies Used
+# Backend Responsibilities
 
-| Technology | Purpose |
+| Layer | Responsibility |
 |---|---|
-| Node.js | Backend runtime |
-| OpenAI SDK | LLM communication |
-| dotenv | Environment variables |
-| JSON | Data exchange |
-| REST | API architecture |
+| api | REST communication |
+| llm | AI orchestration |
+| stt | future speech-to-text |
+| tts | future text-to-speech |
 
 ---
 
-# Step-by-Step
+# Snapshot Evolution
+
+| Step | File | Description |
+|---|---|---|
+| 01 | step_01_basic_http_server.js | Basic REST backend |
+| 02 | step_02_llm_rest_api.js | REST + LLM integration |
+| 03 | server.js | Current operational backend |
+
+---
+
+# Step-by-Step Development
 
 ## Step 01 — Create OpenAI API Key
 
-Create the key in:
+The OpenAI API key was created separately from ChatGPT web subscriptions.
 
-OpenAI Platform → API Keys
-
-Important:
+Important learning:
 
 ```text
-The API key must NEVER be stored inside ESP32 firmware.
+ChatGPT plans and OpenAI API billing are different services.
 ```
 
 ---
 
 ## Step 02 — Configure Billing
 
-Add a small prepaid credit:
+A small prepaid balance was configured.
+
+Recommended:
 
 - 5 USD
 - 10 USD
 
-Enough for educational testing.
+Enough for educational projects.
 
 ---
 
@@ -151,7 +151,7 @@ Inside:
 backend/
 ```
 
-run:
+Run:
 
 ```bash
 npm install openai dotenv express
@@ -185,11 +185,12 @@ Add to `.gitignore`:
 .env
 ```
 
-Never:
+The API key must NEVER remain inside:
 
-- hardcode API keys
-- commit secrets
-- place keys inside firmware
+- firmware
+- ESP32
+- GitHub
+- screenshots
 
 ---
 
@@ -210,17 +211,22 @@ Responsibilities:
 
 ---
 
-# Example Backend Logic
+# Why Provider Abstraction Matters
 
-```javascript
-require("dotenv").config();
+The ESP32 does NOT know which AI provider exists.
 
-const OpenAI = require("openai");
+Today:
 
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-```
+- OpenAI
+
+Future:
+
+- Ollama
+- Gemini
+- Claude
+- Local LLMs
+
+without changing firmware.
 
 ---
 
@@ -234,13 +240,39 @@ backend/api/test_llm.js
 
 Purpose:
 
-Validate backend LLM communication independently.
+Validate backend LLM communication independently before ESP32 integration.
 
-Project philosophy:
+---
+
+# REST API Evolution
+
+## Initial Backend
 
 ```text
-Validate subsystems independently before integration.
+POST /ping
 ```
+
+Validated:
+
+- REST
+- JSON
+- Express
+- HTTP communication
+
+---
+
+## Current Backend
+
+```text
+POST /ask
+```
+
+Validated:
+
+- OpenAI integration
+- async orchestration
+- AI responses
+- backend abstraction layer
 
 ---
 
@@ -256,7 +288,7 @@ Cannot find module 'test_llm.js'
 
 Cause:
 
-The command was executed from the repository root.
+Execution from repository root.
 
 Solution:
 
@@ -276,43 +308,21 @@ Cannot find module 'dotenv'
 
 Cause:
 
-Dependencies were installed in the wrong backend layer.
+Dependencies installed in wrong backend layer.
 
-Solution:
-
-Install dependencies inside:
-
-```text
-backend/
-```
-
-instead of:
-
-```text
-backend/api/
-```
-
----
-
-# Architectural Improvement
-
-The backend evolved from:
+Architectural improvement:
 
 ```text
 backend/api/node_modules
 ```
 
-to:
+became:
 
 ```text
 backend/node_modules
 ```
 
-This improved:
-
-- modularity
-- scalability
-- provider abstraction
+This improved modularity and scalability.
 
 ---
 
@@ -328,11 +338,10 @@ An embedded system is...
 
 Validated:
 
-- OpenAI API access
-- Billing
+- OpenAI API
 - dotenv
-- Backend orchestration
-- Cloud AI integration
+- backend orchestration
+- cloud AI integration
 
 ---
 
@@ -341,11 +350,11 @@ Validated:
 | Concept | Description |
 |---|---|
 | LLM | Large Language Model |
-| Backend Proxy | API abstraction layer |
-| API Security | Secrets remain in backend |
-| dotenv | Environment configuration |
 | Thin Edge | Lightweight embedded device |
+| Backend Proxy | AI abstraction layer |
+| dotenv | Environment variables |
 | Cloud AI | Intelligence outside ESP32 |
+| REST API | HTTP orchestration |
 
 ---
 
@@ -355,13 +364,13 @@ Validated:
 |---|---|
 | Phase 01 — Wi‑Fi Foundation | ✅ Complete |
 | Phase 02 — HTTP Communication | ✅ Complete |
-| Phase 03 — Cloud LLM Integration | 🚧 Backend Validated |
+| Phase 03 — Cloud LLM Integration | 🚧 Backend validated |
 
 ---
 
-# Next Steps
+# Next Step
 
-Create REST endpoint:
+Integrate ESP32 with:
 
 ```text
 POST /ask
@@ -371,12 +380,12 @@ Future flow:
 
 ```text
 ESP32
-    ↓ HTTP
+   ↓
 Backend API
-    ↓
+   ↓
 askLLM()
-    ↓
+   ↓
 OpenAI API
-    ↓
+   ↓
 Response
 ```
