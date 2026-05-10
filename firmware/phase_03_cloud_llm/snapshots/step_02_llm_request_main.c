@@ -12,8 +12,9 @@
 
 #include "esp_http_client.h"
 
-#define WIFI_SSID      "OKFIBRA-Claudio_2GHz"
-#define WIFI_PASSWORD  "15120813"
+#define WIFI_SSID      "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD  "YOUR_WIFI_PASSWORD"
+
 
 #define SERVER_URL "http://192.168.77.16:3000/ask"
 
