@@ -1,83 +1,200 @@
 # LLM IoT Thin Edge
 
-An educational and professional project exploring the concept of **Thin Edge Devices powered by Cloud-based LLMs** using ESP32-based hardware from M5Stack.
+An educational and professional project exploring the concept of **Thin Edge Devices powered by Cloud-based LLMs** using ESP32-S3 hardware from the M5Stack ecosystem.
 
-The project is designed to evolve incrementally through isolated and functional phases, ensuring that each new feature does not break previous implementations.
+The project evolves incrementally through isolated and functional phases, ensuring that each new feature does not break previous implementations.
 
 ---
 
-## Project Goals
+# Project Goals
 
 - Explore Thin Edge Device architectures
 - Integrate ESP32 devices with Cloud-based LLMs
 - Build multimodal embedded AI systems
 - Create a didactic and professional reference project
+- Preserve architecture evolution and troubleshooting history
 - Keep each phase isolated and reproducible
 
 ---
 
-## Architecture Philosophy
+# Architecture Philosophy
 
 This project follows the concept of:
 
-> Thin Edge Device + Cloud-based LLM
+```text
+Thin Edge Device + Cloud-based LLM
+```
 
-Future phases will also explore:
+Future phases will evolve toward:
 
-> Hybrid Edge AI Architecture
+```text
+Interactive Embedded AI Runtime
+```
+
+and later:
+
+```text
+Hybrid Edge AI Architecture
+```
 
 ---
 
-## Devices Used
+# Hardware Ecosystem
 
-### Core Devices
-- M5AtomS3 Lite
-- M5AtomS3R
-- M5AtomS3R CAM
+The project uses modular ESP32-S3 devices from the M5Stack ecosystem.
+
+Core devices currently used:
+
+- AtomS3 Lite
+- AtomS3R AI Chatbot
+- AtomS3R CAM AI Chatbot
 - Echo Pyramid
 - CoreS3 Lite
-- Module-LLM
+- Module LLM Kit
+
+More information:
+
+```text
+docs/devices/
+```
 
 ---
 
-## Repository Structure
+# Current Validated Stack
+
+- ESP-IDF
+- ESP32-S3
+- FreeRTOS
+- Node.js
+- Express
+- OpenAI API
+- REST API
+- HTTP Streaming
+- HTTP_EVENT_ON_DATA
+- dotenv
+
+---
+
+# Current Validated Concepts
+
+- Thin Edge Architecture
+- Cloud LLM Integration
+- Backend Orchestration
+- Provider Abstraction
+- HTTP Streaming
+- Event-driven Networking
+- Streaming Responses
+- Incremental Embedded Runtime Evolution
+
+---
+
+# Repository Structure
 
 ```text
 llm-iot-thin-edge/
 ├── firmware/
 ├── backend/
 ├── docs/
+│   ├── architecture/
+│   ├── devices/
+│   ├── diagrams/
+│   ├── phases/
+│   └── assets/
 ├── README.md
 └── README.pt-BR.md
 ```
 
 ---
 
-## Development Rules
+# Development Rules
 
 - One phase = one functional delivery
 - New phases must not break previous phases
 - Test on real hardware before advancing
+- Preserve troubleshooting history
 - Keep firmware isolated by phase
+- Preserve architecture evolution
 
 ---
 
-## Planned Phases
+# Planned Phases
 
 | Phase | Description |
 |---|---|
 | 01 | Wi-Fi Foundation |
 | 02 | HTTP Communication |
 | 03 | Cloud LLM Integration |
-| 04 | Basic Echo Pyramid Interaction |
-| 05 | AtomS3R Physical Interaction |
-| 06 | Voice Pipeline |
-| 07 | Vision Integration |
-| 08 | Multimodal AI |
-| 09 | Hybrid Local LLM |
+| 04 | Display Runtime |
+| 05 | Voice Interaction |
+| 06 | Vision Pipeline |
+| 07 | Multimodal AI |
+| 08 | Hybrid Local LLM |
 
 ---
 
-## License
+# Documentation Structure
+
+## Architecture Documentation
+
+```text
+docs/architecture/
+```
+
+Contains:
+
+- system architecture
+- backend architecture
+- hardware architecture
+- streaming concepts
+- roadmap evolution
+
+---
+
+## Devices Documentation
+
+```text
+docs/devices/
+```
+
+Contains:
+
+- device specifications
+- hardware roles
+- official documentation links
+- ecosystem overview
+
+---
+
+## Phases Documentation
+
+```text
+docs/phases/
+```
+
+Contains:
+
+- phase evolution
+- development roadmap
+- firmware progression
+- snapshot philosophy
+
+---
+
+# Educational Philosophy
+
+The project prioritizes:
+
+- didactic documentation
+- incremental learning
+- real hardware validation
+- architecture clarity
+- troubleshooting preservation
+- reproducible experiments
+
+The goal is not only to build the final system, but also to preserve and document the entire engineering journey.
+
+---
+
+# License
 
 MIT License
