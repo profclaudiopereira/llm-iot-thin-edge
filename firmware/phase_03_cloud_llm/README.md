@@ -347,6 +347,8 @@ This validated:
 
 # Example ESP32 Output
 
+The logs below show the first successful operational communication between the ESP32 device and a real Cloud-based LLM.
+
 ```text
 PHASE_03_LLM: Sending HTTP POST...
 
@@ -357,7 +359,10 @@ PHASE_03_LLM: LLM Response:
 PHASE_03_LLM: HTTP Status = 200
 
 PHASE_03_LLM: LLM request completed successfully
-```
+
+## First Real ESP32 + LLM Communication
+
+The image below shows the first successful operational communication between the ESP32 device and a real Cloud-based LLM.
 
 ![ESP32 + LLM](../../docs/assets/phase_03_cloud_llm/photos/esp32_llm_first_success.jpg)
 
