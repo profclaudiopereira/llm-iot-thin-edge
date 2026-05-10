@@ -359,6 +359,7 @@ PHASE_03_LLM: LLM Response:
 PHASE_03_LLM: HTTP Status = 200
 
 PHASE_03_LLM: LLM request completed successfully
+```
 
 ## First Real ESP32 + LLM Communication
 
