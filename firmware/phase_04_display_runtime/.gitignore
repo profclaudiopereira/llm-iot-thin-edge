@@ -1,0 +1,91 @@
+# =========================
+# macOS
+# =========================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+.directory
+
+# =========================
+# Windows
+# =========================
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+# Temporary Files
+# =========================
+
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+
+# =========================
+# Build Artifacts
+# =========================
+
+build/
+*.o
+*.a
+*.out
+*.bin
+*.elf
+*.map
+
+# =========================
+# ESP-IDF
+# =========================
+
+sdkconfig.old
+managed_components/
+components/.idf/
+.espressif/
+
+# =========================
+# CMake
+# =========================
+
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+
+# =========================
+# Python
+# =========================
+
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+dist/
+venv/
+.venv/
+env/
+
+# =========================
+# IDE / Editors
+# =========================
+
+.vscode/
+.idea/
+.clangd/
+.ccls-cache/
+compile_commands.json
+
+# =========================
+# User-specific
+# =========================
+
+*.user
+*.workspace
+*.suo
+*.sln.docstates
