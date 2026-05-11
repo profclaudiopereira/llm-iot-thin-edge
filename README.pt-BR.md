@@ -132,6 +132,50 @@ llm-iot-thin-edge/
 
 ---
 
+## Observações de Compatibilidade de Hardware
+
+As fases iniciais do projeto foram propositalmente desenvolvidas para permanecerem independentes de hardware específico.
+
+As fases:
+
+```text
+01 — Fundação Wi-Fi
+02 — Comunicação HTTP
+03 — Integração Cloud LLM
+```
+
+podem ser reproduzidas utilizando diversas placas ESP32 e ESP32-S3, incluindo:
+
+* ESP32 DevKit
+* ESP32-S3 DevKit
+* AtomS3 Lite
+* outros dispositivos compatíveis ESP32
+
+Isso é possível porque o projeto segue o conceito de:
+
+```text
+Thin Edge Device + Cloud-based LLM
+```
+
+onde o dispositivo embarcado atua principalmente como um edge orchestrator enquanto o processamento de IA ocorre na nuvem.
+
+A partir da:
+
+```text
+Phase 04 — Display Runtime
+```
+
+o projeto começa a introduzir camadas de runtime específicas de hardware, como:
+
+* renderização em display
+* interação touch
+* pipelines de áudio
+* interação multimodal
+
+que dependem de dispositivos específicos do ecossistema M5Stack.
+
+---
+
 # Estrutura da Documentação
 
 ## Documentação de Arquitetura
