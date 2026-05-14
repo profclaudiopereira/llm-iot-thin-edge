@@ -1,3 +1,5 @@
+![LLM IoT Thin Edge](docs/assets/llm-iot-thin-edge-banner.png)
+
 # LLM IoT Thin Edge
 
 An educational and professional project exploring the concept of **Thin Edge Devices powered by Cloud-based LLMs** using ESP32-S3 hardware from the M5Stack ecosystem.
