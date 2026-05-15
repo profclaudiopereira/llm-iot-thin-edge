@@ -1,4 +1,4 @@
-![LLM IoT Thin Edge](docs/assests/llm-iot-thin-edge-banner.png)
+![LLM IoT Thin Edge](docs/assets/llm-iot-thin-edge-banner.png)
 
 # LLM IoT Thin Edge
 
