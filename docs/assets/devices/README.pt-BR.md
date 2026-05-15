@@ -6,7 +6,7 @@ Esta pasta centraliza as fotos reais utilizadas no projeto LLM IoT Thin Edge.
 
 ```text
 docs/
-└── assests/
+└── assets/
     ├── banner/
     ├── devices/
     ├── phase_01_wifi/
@@ -21,6 +21,30 @@ docs/
 - AtomS3R CAM
 - CoreS3 Lite
 - Echo Pyramid
+- Module LLM Kit
+
+## Module LLM Kit (AX630C)
+
+Fotos:
+- LLM_kit_imag1.jpeg
+- LLM_kit_imag2.jpeg
+
+Descrição:
+
+As imagens acima mostram a estrutura interna do Module LLM Kit baseado no processador de IA AX630C.
+
+Este módulo está planejado para futuros experimentos Hybrid Edge AI envolvendo:
+
+- inferência local
+- runtime LLM embarcado
+- processamento multimodal
+- orquestração híbrida cloud/local
+
+O kit acompanha duas placas integradas utilizadas para experimentos de aceleração IA e orquestração embarcada.
+
+![LLM Kit 01](devices/LLM_kit_imag1.jpeg)
+
+![LLM Kit 02](devices/LLM_kit_imag2.jpeg)
 
 ## Filosofia
 
