@@ -44,8 +44,6 @@ The kit includes two integrated boards used for AI acceleration and embedded orc
 
 ![LLM Kit 01](LLM_kit_imag1.jpeg)
 
-![LLM Kit 02](LLM_kit_imag2.jpeg)
-
 ## Philosophy
 
 The project prioritizes:
