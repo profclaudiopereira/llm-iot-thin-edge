@@ -42,9 +42,9 @@ This module is planned for future Hybrid Edge AI experiments involving:
 
 The kit includes two integrated boards used for AI acceleration and embedded orchestration experiments.
 
-![LLM Kit 01](devices/LLM_kit_imag1.jpeg)
+![LLM Kit 01](LLM_kit_imag1.jpeg)
 
-![LLM Kit 02](devices/LLM_kit_imag2.jpeg)
+![LLM Kit 02](LLM_kit_imag2.jpeg)
 
 ## Philosophy
 
