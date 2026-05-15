@@ -10,7 +10,7 @@ This document describes the role of the M5Stack Module LLM Kit in the future Hyb
 
 The image below shows the real M5Stack Module LLM Kit hardware used in the future Hybrid Edge AI roadmap of the project.
 
-![Module LLM Kit](../../assets/devices/LLM_kit_imag1.jpeg)
+![Module LLM Kit](../assets/devices/LLM_kit_imag1.jpeg)
 
 The M5Stack Module LLM Kit is an embedded AI acceleration platform designed to support local AI workloads and edge-side inference.
 
