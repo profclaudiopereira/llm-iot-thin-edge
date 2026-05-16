@@ -42,9 +42,7 @@ Este módulo está planejado para futuros experimentos Hybrid Edge AI envolvendo
 
 O kit acompanha duas placas integradas utilizadas para experimentos de aceleração IA e orquestração embarcada.
 
-![LLM Kit 01](devices/LLM_kit_imag1.jpeg)
-
-![LLM Kit 02](devices/LLM_kit_imag2.jpeg)
+![LLM Kit 01](LLM_kit_imag1.jpeg)
 
 ## Filosofia
 
